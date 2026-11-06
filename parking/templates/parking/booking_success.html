@@ -1,0 +1,25 @@
+{% extends 'parking/base.html' %}
+{% block title %}Booking Confirmed{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm text-center">
+            <div class="card-body p-5">
+                <h1 class="text-success">✅</h1>
+                <h4>Booking Confirmed!</h4>
+                <p class="text-muted">Booking ID: <code>{{ booking.booking_id }}</code></p>
+                <table class="table table-sm text-start mt-3">
+                    <tr><td>Lot</td><td>{{ booking.slot.lot.name }}</td></tr>
+                    <tr><td>Slot</td><td>{{ booking.slot.slot_number }}</td></tr>
+                    <tr><td>Vehicle</td><td>{{ booking.vehicle_number }}</td></tr>
+                    <tr><td>From</td><td>{{ booking.start_time }}</td></tr>
+                    <tr><td>To</td><td>{{ booking.end_time }}</td></tr>
+                    <tr><td>Amount Paid</td><td>₹{{ booking.amount }}</td></tr>
+                    <tr><td>Status</td><td><span class="badge bg-success">{{ booking.get_status_display }}</span></td></tr>
+                </table>
+                <a href="{% url 'my_bookings' %}" class="btn btn-primary mt-2">View My Bookings</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

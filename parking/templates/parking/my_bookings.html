@@ -1,0 +1,49 @@
+{% extends 'parking/base.html' %}
+{% block title %}My Bookings{% endblock %}
+{% block content %}
+<h2 class="mb-4">My Bookings</h2>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+    <thead>
+        <tr>
+            <th>Lot / Slot</th>
+            <th>Vehicle</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in bookings %}
+        <tr>
+            <td>{{ b.slot.lot.name }} &middot; {{ b.slot.slot_number }}</td>
+            <td>{{ b.vehicle_number }}</td>
+            <td>{{ b.start_time }}</td>
+            <td>{{ b.end_time }}</td>
+            <td>₹{{ b.amount }}</td>
+            <td>
+                <span class="badge
+                    {% if b.status == 'confirmed' %}bg-success
+                    {% elif b.status == 'pending' %}bg-warning text-dark
+                    {% elif b.status == 'cancelled' %}bg-secondary
+                    {% else %}bg-info{% endif %}">
+                    {{ b.get_status_display }}
+                </span>
+            </td>
+            <td>
+                {% if b.status == 'pending' %}
+                    <a href="{% url 'payment' b.booking_id %}" class="btn btn-sm btn-outline-primary">Pay Now</a>
+                {% elif b.is_upcoming %}
+                    <a href="{% url 'cancel_booking' b.booking_id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancel this booking?')">Cancel</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="text-muted text-center">No bookings yet. <a href="{% url 'lot_list' %}">Find parking</a></td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

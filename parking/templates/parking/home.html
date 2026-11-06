@@ -1,0 +1,52 @@
+{% extends 'parking/base.html' %}
+{% block title %}Smart Parking System — Home{% endblock %}
+{% block content %}
+<div class="hero p-5 mb-4 rounded-4 text-center">
+    <h1 class="display-5 fw-bold">Find & Book Parking Instantly</h1>
+    <p class="lead text-muted">No sensors, no hardware — real-time slot availability calculated purely from live booking data.</p>
+    <a href="{% url 'lot_list' %}" class="btn btn-primary btn-lg mt-2">Find a Parking Slot</a>
+</div>
+
+<div class="row text-center mb-5 g-3">
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-4">
+            <h2 class="fw-bold">{{ total_lots }}</h2>
+            <p class="text-muted mb-0">Parking Lots</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-4">
+            <h2 class="fw-bold">{{ total_slots }}</h2>
+            <p class="text-muted mb-0">Total Slots Managed</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-4">
+            <h2 class="fw-bold">100%</h2>
+            <p class="text-muted mb-0">Software-based (Sensor-free)</p>
+        </div>
+    </div>
+</div>
+
+<h3 class="mb-3">Available Parking Lots</h3>
+<div class="row g-4">
+    {% for lot in lots %}
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ lot.name }}</h5>
+                <p class="text-muted mb-1">📍 {{ lot.location }}</p>
+                <p class="mb-1">₹{{ lot.price_per_hour }}/hour</p>
+                <p class="mb-2">
+                    <span class="badge bg-success">{{ lot.available_slots_count }} available</span>
+                    <span class="badge bg-secondary">{{ lot.total_slots }} total</span>
+                </p>
+                <a href="{% url 'lot_detail' lot.pk %}" class="btn btn-outline-primary btn-sm">View Slots</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No parking lots added yet. Run <code>python manage.py seed_data</code> to add demo data.</p>
+    {% endfor %}
+</div>
+{% endblock %}

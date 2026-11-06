@@ -1,0 +1,64 @@
+:root {
+    --primary: #1e3a5f;
+    --accent: #2f9e44;
+}
+
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.navbar {
+    background: linear-gradient(90deg, var(--primary), #274b73);
+}
+
+.hero {
+    background: linear-gradient(135deg, #e9f0fb, #f4f6f9);
+    border: 1px solid #dbe4f0;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #e5e9f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.card {
+    border: 1px solid #e5e9f0;
+    border-radius: 14px;
+}
+
+.slot-box {
+    border: 2px solid transparent;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.slot-available {
+    background-color: var(--accent);
+}
+
+.slot-occupied {
+    background-color: #d9534f;
+}
+
+.slot-inactive {
+    background-color: #adb5bd;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #16304d;
+    border-color: #16304d;
+}
+
+form input, form select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ccd4e0;
+    border-radius: 8px;
+}

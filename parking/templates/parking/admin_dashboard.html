@@ -1,0 +1,66 @@
+{% extends 'parking/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-4">
+            <h2 class="fw-bold">₹{{ total_revenue }}</h2>
+            <p class="text-muted mb-0">Total Revenue</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-4">
+            <h2 class="fw-bold">{{ total_bookings }}</h2>
+            <p class="text-muted mb-0">Total Bookings</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card p-4 rounded-4">
+            <h2 class="fw-bold">{{ todays_bookings }}</h2>
+            <p class="text-muted mb-0">Bookings Today</p>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3">Lot-wise Live Occupancy</h4>
+<div class="table-responsive mb-5">
+<table class="table table-hover">
+    <thead><tr><th>Lot</th><th>Available</th><th>Occupied</th><th>Occupancy</th></tr></thead>
+    <tbody>
+        {% for s in lot_stats %}
+        <tr>
+            <td>{{ s.lot.name }}</td>
+            <td>{{ s.available }}</td>
+            <td>{{ s.occupied }}</td>
+            <td style="min-width:200px;">
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-danger" style="width: {{ s.occupancy_percent }}%"></div>
+                </div>
+                <small>{{ s.occupancy_percent }}%</small>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<h4 class="mb-3">Recent Bookings</h4>
+<div class="table-responsive">
+<table class="table table-sm">
+    <thead><tr><th>User</th><th>Lot/Slot</th><th>Status</th><th>Amount</th><th>Created</th></tr></thead>
+    <tbody>
+        {% for b in recent_bookings %}
+        <tr>
+            <td>{{ b.user.username }}</td>
+            <td>{{ b.slot.lot.name }} / {{ b.slot.slot_number }}</td>
+            <td>{{ b.get_status_display }}</td>
+            <td>₹{{ b.amount }}</td>
+            <td>{{ b.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

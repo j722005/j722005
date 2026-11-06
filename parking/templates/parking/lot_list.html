@@ -1,0 +1,28 @@
+{% extends 'parking/base.html' %}
+{% block title %}Find Parking{% endblock %}
+{% block content %}
+<h2 class="mb-4">Find Parking</h2>
+<div class="row g-4">
+    {% for lot in lots %}
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ lot.name }}</h5>
+                <p class="text-muted mb-1">📍 {{ lot.location }}</p>
+                <p class="mb-1">₹{{ lot.price_per_hour }}/hour</p>
+                <div class="progress mb-2" style="height: 8px;">
+                    <div class="progress-bar bg-danger" style="width: {{ lot.occupancy_percent }}%"></div>
+                </div>
+                <p class="mb-2">
+                    <span class="badge bg-success">{{ lot.available_slots_count }} available</span>
+                    <span class="badge bg-secondary">{{ lot.total_slots }} total</span>
+                </p>
+                <a href="{% url 'lot_detail' lot.pk %}" class="btn btn-outline-primary btn-sm">View Slots</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-muted">No parking lots available right now.</p>
+    {% endfor %}
+</div>
+{% endblock %}

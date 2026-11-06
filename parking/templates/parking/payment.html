@@ -1,0 +1,32 @@
+{% extends 'parking/base.html' %}
+{% block title %}Payment{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Complete Payment</h4>
+                <table class="table table-sm">
+                    <tr><td>Lot</td><td>{{ booking.slot.lot.name }}</td></tr>
+                    <tr><td>Slot</td><td>{{ booking.slot.slot_number }}</td></tr>
+                    <tr><td>Vehicle</td><td>{{ booking.vehicle_number }}</td></tr>
+                    <tr><td>Duration</td><td>{{ booking.duration_hours }} hrs</td></tr>
+                    <tr><td>Amount</td><td class="fw-bold">₹{{ booking.amount }}</td></tr>
+                </table>
+                <form method="post">
+                    {% csrf_token %}
+                    <label class="form-label fw-bold">Choose payment method</label>
+                    {% for radio in form.method %}
+                    <div class="form-check mb-2">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                    <p class="text-muted small">This is a simulated payment gateway for demo purposes — no real transaction occurs.</p>
+                    <button type="submit" class="btn btn-success w-100">Pay ₹{{ booking.amount }}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
