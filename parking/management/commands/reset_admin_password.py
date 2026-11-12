@@ -21,10 +21,27 @@ class Command(BaseCommand):
 
         matching_users = list(users[:2])
         if len(matching_users) != 1:
-            if username:
+            if username and not matching_users:
                 raise CommandError('No matching superuser found for DJANGO_ADMIN_RESET_USERNAME.')
+            if username:
+                raise CommandError('DJANGO_ADMIN_RESET_USERNAME must match exactly one superuser.')
+
+            if matching_users:
+                usernames = ', '.join(
+                    get_user_model().objects.filter(is_superuser=True)
+                    .order_by('username')
+                    .values_list('username', flat=True)
+                )
+                self.stdout.write(
+                    self.style.WARNING(
+                        f'Multiple superusers found ({usernames}); no password was changed. '
+                        'Set DJANGO_ADMIN_RESET_USERNAME to select the account.'
+                    )
+                )
+                return
+
             raise CommandError(
-                'Expected exactly one superuser. Set DJANGO_ADMIN_RESET_USERNAME to select the account.'
+                'No superusers exist in the database; create one before resetting its password.'
             )
 
         user = matching_users[0]
