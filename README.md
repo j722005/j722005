@@ -70,6 +70,8 @@ Then open **http://127.0.0.1:8000/**
 - Staff dashboard: log in with the superuser account → `/dashboard/`
 - Django admin (add/edit lots & slots manually): `/admin/`
 
+The Render backend runs `seed_data` after migrations on every start. This idempotently adds the demo parking lots and slots if they are missing.
+
 ## How "smart" detection works without sensors
 `ParkingSlot.is_available()` in `parking/models.py` checks whether any
 `CONFIRMED`/`ACTIVE` booking's `start_time`–`end_time` window contains

@@ -10,7 +10,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn smart_parking.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: python manage.py migrate && python manage.py seed_data && python manage.py collectstatic --noinput && gunicorn smart_parking.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /api/lots/
     envVars:
       - key: PYTHON_VERSION
@@ -26,11 +26,11 @@ services:
           name: smart-parking-db
           property: connectionString
       - key: DJANGO_CORS_ALLOWED_ORIGINS
-        value: https://smart-parking-frontend.onrender.com
+        value: https://smart-parking-frontend-jxxa.onrender.com
       - key: DJANGO_CSRF_TRUSTED_ORIGINS
-        value: https://smart-parking-frontend.onrender.com,https://smart-parking-api-fe0a.onrender.com
+        value: https://smart-parking-frontend-jxxa.onrender.com,https://smart-parking-api-fe0a.onrender.com
       - key: FRONTEND_URL
-        value: https://smart-parking-frontend.onrender.com
+        value: https://smart-parking-frontend-jxxa.onrender.com
 
   - type: web
     name: smart-parking-frontend
