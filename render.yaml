@@ -20,7 +20,7 @@ services:
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DJANGO_ALLOWED_HOSTS
-        value: smart-parking-api.onrender.com
+        value: smart-parking-api-fe0a.onrender.com
       - key: DATABASE_URL
         fromDatabase:
           name: smart-parking-db
@@ -28,7 +28,7 @@ services:
       - key: DJANGO_CORS_ALLOWED_ORIGINS
         value: https://smart-parking-frontend.onrender.com
       - key: DJANGO_CSRF_TRUSTED_ORIGINS
-        value: https://smart-parking-frontend.onrender.com,https://smart-parking-api.onrender.com
+        value: https://smart-parking-frontend.onrender.com,https://smart-parking-api-fe0a.onrender.com
       - key: FRONTEND_URL
         value: https://smart-parking-frontend.onrender.com
 
@@ -40,7 +40,7 @@ services:
     staticPublishPath: dist
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://smart-parking-api.onrender.com/api
+        value: https://smart-parking-api-fe0a.onrender.com/api
     routes:
       - type: rewrite
         source: /*
