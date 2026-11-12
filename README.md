@@ -72,6 +72,8 @@ Then open **http://127.0.0.1:8000/**
 
 The Render backend runs `seed_data` after migrations on every start. This idempotently adds the demo parking lots and slots if they are missing.
 
+To reset the Render admin password on the free plan, set `DJANGO_ADMIN_RESET_PASSWORD` in the backend service's Environment settings and redeploy. If there is exactly one superuser, it is reset; if there are multiple, also set `DJANGO_ADMIN_RESET_USERNAME` to the intended account. After the deploy logs confirm the reset, remove both reset variables and redeploy so the password is not kept in the service environment.
+
 ## How "smart" detection works without sensors
 `ParkingSlot.is_available()` in `parking/models.py` checks whether any
 `CONFIRMED`/`ACTIVE` booking's `start_time`–`end_time` window contains
