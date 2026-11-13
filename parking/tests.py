@@ -1,8 +1,12 @@
+import os
 import uuid
 from decimal import Decimal
+from unittest.mock import patch
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
+from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -15,6 +19,27 @@ from .models import (
 )
 
 User = get_user_model()
+
+
+class ResetAdminPasswordCommandTests(TestCase):
+    def test_creates_first_superuser_when_username_and_password_are_configured(self):
+        with patch.dict(os.environ, {
+            'DJANGO_ADMIN_RESET_USERNAME': 'fresh-admin',
+            'DJANGO_ADMIN_RESET_PASSWORD': 'V3ry-Long-Parking-Admin-2026!',
+        }):
+            call_command('reset_admin_password')
+
+        admin = User.objects.get(username='fresh-admin')
+        self.assertTrue(admin.is_superuser)
+        self.assertTrue(admin.check_password('V3ry-Long-Parking-Admin-2026!'))
+
+    def test_requires_username_before_creating_first_superuser(self):
+        with patch.dict(os.environ, {'DJANGO_ADMIN_RESET_PASSWORD': 'V3ry-Long-Parking-Admin-2026!'}):
+            os.environ.pop('DJANGO_ADMIN_RESET_USERNAME', None)
+            with self.assertRaisesMessage(CommandError, 'Set DJANGO_ADMIN_RESET_USERNAME'):
+                call_command('reset_admin_password')
+
+        self.assertFalse(User.objects.filter(is_superuser=True).exists())
 
 
 class SmartParkingAPITests(APITestCase):

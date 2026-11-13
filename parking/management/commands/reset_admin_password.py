@@ -7,20 +7,39 @@ from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
-    help = 'Resets an existing superuser password from environment variables.'
+    help = 'Creates or resets a superuser using environment variables.'
 
     def handle(self, *args, **options):
         password = os.environ.get('DJANGO_ADMIN_RESET_PASSWORD')
         if not password:
             raise CommandError('Set DJANGO_ADMIN_RESET_PASSWORD before running this command.')
 
-        users = get_user_model().objects.filter(is_superuser=True)
+        user_model = get_user_model()
+        all_superusers = user_model.objects.filter(is_superuser=True)
         username = os.environ.get('DJANGO_ADMIN_RESET_USERNAME')
-        if username:
-            users = users.filter(username=username)
 
-        matching_users = list(users[:2])
+        matching_users = list(all_superusers.filter(username=username)[:2]) if username else list(all_superusers[:2])
         if len(matching_users) != 1:
+            if not matching_users and not all_superusers.exists():
+                if not username:
+                    raise CommandError(
+                        'No superusers exist. Set DJANGO_ADMIN_RESET_USERNAME to create the first superuser.'
+                    )
+                if user_model.objects.filter(username=username).exists():
+                    raise CommandError(
+                        f'Username "{username}" already exists as a non-superuser; choose another username.'
+                    )
+
+                user = user_model(username=username)
+                try:
+                    validate_password(password, user)
+                except ValidationError as error:
+                    raise CommandError('; '.join(error.messages)) from error
+
+                user_model.objects.create_superuser(username=username, password=password)
+                self.stdout.write(self.style.SUCCESS(f'Created superuser "{username}".'))
+                return
+
             if username and not matching_users:
                 raise CommandError('No matching superuser found for DJANGO_ADMIN_RESET_USERNAME.')
             if username:
@@ -28,7 +47,7 @@ class Command(BaseCommand):
 
             if matching_users:
                 usernames = ', '.join(
-                    get_user_model().objects.filter(is_superuser=True)
+                    all_superusers
                     .order_by('username')
                     .values_list('username', flat=True)
                 )
@@ -39,10 +58,6 @@ class Command(BaseCommand):
                     )
                 )
                 return
-
-            raise CommandError(
-                'No superusers exist in the database; create one before resetting its password.'
-            )
 
         user = matching_users[0]
         try:
